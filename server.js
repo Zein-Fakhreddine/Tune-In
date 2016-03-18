@@ -126,13 +126,14 @@ function onRequest(request, response){
     }
 
     if(index == 'getchosensongs'){
+        response.writeHead(202, {"Context-Type": "text/plain"});
         var serverKey = request.url.split("&key=")[1];
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
                 for(x in s.users){
                     var u = s.users[x];
-                    response.writeHead(202, {"Context-Type": "text/plain"});
+
                     if(u.chosenSongId)
                         response.write(u.chosenSongId.toString() + ",");
                 }
