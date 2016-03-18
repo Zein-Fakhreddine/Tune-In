@@ -1,0 +1,194 @@
+var http = require('http');
+var fs = require("fs");
+
+var servers = [];
+
+var letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+
+var server = function(name, key){
+    console.log("Server created with the server key: " + key + " and the servername: " + name);
+    this.serverName = name;
+    this.serverKey = key;
+    this.users = [];
+};
+
+var user = function (userName) {
+    this.userName = userName;
+    this.hasChosen = false;
+    this.hasVoted = false;
+    this.chosenSongId = -1;
+    this.votedSongId = -1;
+};
+
+var track = function (track_id) {
+    this.track_id = track_id;
+    this.votes = 0;
+};
+
+
+//404 response
+function send404Response(response){
+    response.writeHead(404, {"Context-Type": "text/plain"});
+    response.write("Error 404 page not found");
+    console.log("error");
+    response.end();
+}
+
+//Handle a user request
+function onRequest(request, response){
+
+
+    var index = request.url.split("/")[1].split("&")[0];
+
+    if(index == 'ping'){
+        response.writeHead(202, {"Context-Type": "text/plain"});
+        response.write('pong');
+    }
+    if(index == 'host') {
+        var  serverName = request.url.split("=")[1];''
+        for(var i  =0; i < serverName.length; i++){
+            if(serverName.charAt(i) == '+')
+               serverName =  serverName.replace('+', ' ');
+        }
+        servers.push(new server(serverName, "KYPD"));
+        console.log("New server added with name: " + serverName);
+
+        response.writeHead(202, {"Context-Type": "text/plain"});
+        response.write("KYPD");
+    }
+
+    if(index == 'user') {
+        var  username = request.url.split("=")[1].split("&")[0];
+
+        for(var i  =0; i < username.length; i++){
+            if(username.charAt(i) == '+')
+                username = username.replace('+', ' ');
+        }
+
+        var serverKey = request.url.split("&key=")[1];
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverKey == serverKey){
+                console.log("New user requested with the username: " + username + " and the serverkey: " + serverKey);
+                s.users.push(new user(username));
+            }
+        }
+
+
+    }
+
+    if(index == 'userschosensong'){
+        var name = request.url.split("=")[1].split("&")[0];
+        for(var i  =0; i < name.length; i++){
+            if(name.charAt(i) == '+')
+                name = name.replace('+', ' ');
+        }
+
+
+        var trackId = request.url.split("&id=")[1].split("&key=")[0];
+
+        var serverKey = request.url.split("&key=")[1];
+        console.log("The name is: " + name);
+        console.log("The serverkey is: " + serverKey);
+        for(i in servers){
+            var s = servers[i];
+            console.log("Checking serverkey: " + s.serverKey);
+            if(s.serverKey ==  serverKey){
+                //Selected server
+                console.log("Found the server when trying to push track");
+                console.log("User size: " + s.users.length);
+                for(x in s.users){
+                    var u = s.users[x];
+                    console.log("Checking user with name: " + u.userName);
+                    if(u.userName == name){
+                        u.chosenSongId = parseInt(trackId, 10);
+                        console.log("Added users chosen song with the the name: " + u.userName + "and the chosen song id: " + u.chosenSongId);
+                    }
+                }
+            }
+        }
+    }
+
+    if(index == 'getchosensongs'){
+        var serverKey = request.url.split("&key=")[1];
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverKey == serverKey){
+                for(x in s.users){
+                    var u = s.users[x];
+                    response.writeHead(202, {"Context-Type": "text/plain"});
+                    if(u.chosenSongId)
+                        response.write(u.chosenSongId.toString() + ",");
+                }
+            }
+        }
+    }
+
+    if(index == 'uservotedsong'){
+        var name = request.url.split("=")[1].split("&")[0];
+        for(var i  =0; i < name.length; i++){
+            if(name.charAt(i) == '+')
+                name = name.replace('+', ' ');
+        }
+
+
+        var trackId = request.url.split("&id=")[1].split("&key=")[0];
+
+        var serverKey = request.url.split("&key=")[1];
+        console.log("The name is: " + name);
+        console.log("The serverkey is: " + serverKey);
+        for(i in servers){
+            var s = servers[i];
+            console.log("Checking serverkey: " + s.serverKey);
+            if(s.serverKey ==  serverKey){
+                //Selected server
+                console.log("Found the server when trying to push track");
+                console.log("User size: " + s.users.length);
+                for(x in s.users){
+                    var u = s.users[x];
+                    console.log("Checking user with name: " + u.username);
+                    if(u.userName == name){
+                        u.votedSongId = parseInt(trackId, 10);
+                        console.log("Added users voted song with the the name: " + u.userName + "and the voted song id: " + u.chosenSongId);
+                    }
+                }
+            }
+        }
+    }
+
+    if(index == 'getvotes'){
+        var serverKey = request.url.split("&key=")[1];
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverKey == serverKey){
+                for(x in s.users){
+                    var u = s.users[x];
+                    response.writeHead(202, {"Context-Type": "text/plain"});
+                    if(u.votedSongId)
+                        response.write(u.votedSongId.toString() + ",");
+                }
+            }
+        }
+    }
+
+    if(index == 'restart'){
+        var serverKey = request.url.split("&key=")[1];
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverKey == serverKey){
+                for(x in s.users){
+                    var u = s.users[x];
+                    u.chosenSongId = -1;
+                    u.votedSongId = -1;
+                    u.hasChosen = false;
+                    u.hasVoted = false;
+                }
+            }
+
+        }
+    }
+    response.end();
+}
+
+http.createServer(onRequest).listen(8888);
+console.log("The server is running");

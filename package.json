@@ -1,0 +1,22 @@
+{
+  "name": "tune-in",
+  "version": "0.0.1",
+  "description": "Tune In backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zein-Fakhreddine/Tune-In.git"
+  },
+  "author": "Zein Fakhreddine",
+  "engines": {
+    "node": "4.1.1"
+  },
+  "bugs": {
+    "license": "ISC",
+    "url": "https://github.com/Zein-Fakhreddine/Tune-In-Bot/issues"
+  },
+  "homepage": "https://github.com/Zein-Fakhreddine/Tune-In#readme"
+}
