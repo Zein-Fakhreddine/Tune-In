@@ -190,5 +190,6 @@ function onRequest(request, response){
     response.end();
 }
 
-http.createServer(onRequest).listen(8888);
+var port = Number(process.env.PORT || 8000);
+http.createServer(onRequest).listen(port);
 console.log("The server is running");
