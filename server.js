@@ -3,7 +3,7 @@ var fs = require("fs");
 
 var servers = [];
 
-var letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 var server = function(name, key){
     console.log("Server created with the server key: " + key + " and the servername: " + name);
@@ -50,11 +50,13 @@ function onRequest(request, response){
             if(serverName.charAt(i) == '+')
                serverName =  serverName.replace('+', ' ');
         }
-        servers.push(new server(serverName, "KYPD"));
+
+        var key = getKey();
+        servers.push(new server(serverName, key));
         console.log("New server added with name: " + serverName);
 
         response.writeHead(202, {"Context-Type": "text/plain"});
-        response.write("KYPD");
+        response.write(key);
     }
 
     if(index == 'user') {
@@ -188,6 +190,26 @@ function onRequest(request, response){
         }
     }
     response.end();
+}
+
+function getKey(){
+    var text = "";
+
+    for( var i=0; i < 5; i++ )
+        text += letters.charAt(Math.floor(Math.random() * letters.length));
+
+    var isFound = false;
+
+    for(i in servers){
+        var s = servers[i];
+        if(s.serverKey == text)
+            isFound = true;
+    }
+
+    if(isFound)
+        return getKey();
+    else
+        return text;
 }
 
 var port = Number(process.env.PORT || 8000);
