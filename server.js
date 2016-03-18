@@ -44,6 +44,20 @@ function onRequest(request, response){
         response.writeHead(202, {"Context-Type": "text/plain"});
         response.write('pong');
     }
+
+    if(index == 'servercheck'){
+        var serverKey = request.url.split("&key=")[1];
+        var exists = false;
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverKey == serverKey)
+                exists = true;
+        }
+
+        response.writeHead(202, {"Context-Type": "text/plain"});
+        response.write(exists.toString());
+    }
+
     if(index == 'host') {
         var  serverName = request.url.split("=")[1];''
         for(var i  =0; i < serverName.length; i++){
