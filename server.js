@@ -10,6 +10,7 @@ var server = function(name, key){
     this.serverName = name;
     this.serverKey = key;
     this.users = [];
+    this.restartingNames = [];
 };
 
 var user = function (userName) {
@@ -189,7 +190,11 @@ function onRequest(request, response){
     }
 
     if(index == 'restart'){
+        response.writeHead(202, {"Context-Type": "text/plain"});
         var serverKey = request.url.split("&key=")[1];
+        var name = request.url.split("=")[1].split("&")[0];
+        var isServer = request.url.split("&id=")[1].split("&key=")[0];
+        console.log("Restarting with the serverkey: " + serverKey + ' and the username: ' + name + " and isServer is: " + isServer);
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
@@ -199,6 +204,18 @@ function onRequest(request, response){
                     u.votedSongId = -1;
                     u.hasChosen = false;
                     u.hasVoted = false;
+                    if(isServer == 'true'){
+                        s.restartingNames.push(u.userName);
+                    }
+                    else{
+                        for(z in s.restartingNames){
+                            var restartName = s.restartingNames[z];
+                            if(restartName == u.userName){
+                                s.restartingNames = s.restartingNames.splice(z, 1);
+                                response.write('restart');
+                            }
+                        }
+                    }
                 }
             }
 
