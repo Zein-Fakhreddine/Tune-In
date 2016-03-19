@@ -215,6 +215,7 @@ function onRequest(request, response){
                                 s.restartingNames = s.restartingNames.splice(z, 1);
                                 response.write('restart');
                                 wroteSomething = true;
+                                break;
                             }
                         }
 
