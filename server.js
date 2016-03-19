@@ -193,7 +193,7 @@ function onRequest(request, response){
         response.writeHead(202, {"Context-Type": "text/plain"});
         var serverKey = request.url.split("&key=")[1];
         var name = request.url.split("=")[1].split("&")[0];
-        var isServer = request.url.split("&id=")[1].split("&key=")[0];
+        var isServer = request.url.split("&server=")[1].split("&key=")[0];
         console.log("Restarting with the serverkey: " + serverKey + ' and the username: ' + name + " and isServer is: " + isServer);
         for(i in servers){
             var s = servers[i];
