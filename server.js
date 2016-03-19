@@ -208,13 +208,18 @@ function onRequest(request, response){
                         s.restartingNames.push(u.userName);
                     }
                     else{
+                        var wroteSomething = false;
                         for(z in s.restartingNames){
                             var restartName = s.restartingNames[z];
                             if(restartName == u.userName){
                                 s.restartingNames = s.restartingNames.splice(z, 1);
                                 response.write('restart');
+                                wroteSomething = true;
                             }
                         }
+
+                        if(!wroteSomething)
+                            response.write("Dont restart");
                     }
                 }
             }
