@@ -231,7 +231,6 @@ function onRequest(request, response){
                                 u.hasChosen = false;
                                 u.hasVoted = false;
                                 s.restartingNames = s.restartingNames.splice(z, 1);
-                                response.write('restart');
                                 wroteSomething = true;
                                 break;
                             }
