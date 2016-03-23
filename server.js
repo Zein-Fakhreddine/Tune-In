@@ -89,6 +89,17 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
+                response.writeHead(202, {"Context-Type": "text/plain"});
+                var hasBeenTaken = false;
+                for(x in s.users){
+                    var u = s.users[x];
+                    if(u.userName == username)
+                        hasBeenTaken = true;
+                }
+                if(hasBeenTaken)
+                    response.write("ht");
+                else
+                    response.write("gg");
                 s.hasBeenPinged = true;
                 console.log("New user requested with the username: " + username + " and the serverkey: " + serverKey);
                 s.users.push(new user(username));
