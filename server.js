@@ -236,7 +236,7 @@ function onRequest(request, response){
                                 u.votedSongId = -1;
                                 u.hasChosen = false;
                                 u.hasVoted = false;
-                                s.restartingNames = s.restartingNames.splice(z, 1);
+                                s.restartingNames.splice(z, 1);
                                 z--;
                                 wroteSomething = true;
                                 break;
