@@ -165,7 +165,6 @@ function onRequest(request, response){
                 name = name.replace('+', ' ');
         }
 
-
         var trackId = request.url.split("&id=")[1].split("&key=")[0];
 
         var serverKey = request.url.split("&key=")[1];
@@ -196,9 +195,9 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
+                response.writeHead(202, {"Context-Type": "text/plain"});
                 for(x in s.users){
                     var u = s.users[x];
-                    response.writeHead(202, {"Context-Type": "text/plain"});
                     if(u.votedSongId)
                         response.write(u.votedSongId.toString() + ",");
                 }
