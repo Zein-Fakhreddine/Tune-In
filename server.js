@@ -221,9 +221,15 @@ function onRequest(request, response){
                     var u = s.users[x];
                     if(isServer == 'true'){
                         s.restartingNames.push(u.userName);
+                        if(u.userName == name){
+                            u.chosenSongId = -1;
+                            u.votedSongId = -1;
+                            u.hasChosen = false;
+                            u.hasVoted = false;
+                        }
                     }
                     else{
-                        for(z in s.restartingNames){
+                        for(z = 0; z <  s.restartingNames.length; z++){
                             var restartName = s.restartingNames[z];
                             if(restartName == u.userName){
                                 u.chosenSongId = -1;
@@ -231,6 +237,7 @@ function onRequest(request, response){
                                 u.hasChosen = false;
                                 u.hasVoted = false;
                                 s.restartingNames = s.restartingNames.splice(z, 1);
+                                z--;
                                 wroteSomething = true;
                                 break;
                             }
