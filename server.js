@@ -207,6 +207,7 @@ function onRequest(request, response){
     }
 
     if(index == 'restart'){
+        var wroteSomething = false;
         response.writeHead(202, {"Context-Type": "text/plain"});
         var serverKey = request.url.split("&key=")[1];
         var name = request.url.split("=")[1].split("&")[0];
@@ -222,7 +223,6 @@ function onRequest(request, response){
                         s.restartingNames.push(u.userName);
                     }
                     else{
-                        var wroteSomething = false;
                         for(z in s.restartingNames){
                             var restartName = s.restartingNames[z];
                             if(restartName == u.userName){
@@ -241,7 +241,7 @@ function onRequest(request, response){
                     if(wroteSomething)
                         response.write('restart');
                     else
-                        response.write("Dont restart");
+                        response.write("Don't restart");
                 }
             }
 
