@@ -9,6 +9,7 @@ var server = function(name, key){
     console.log("Server created with the server key: " + key + " and the servername: " + name);
     this.serverName = name;
     this.serverKey = key;
+    this.hasBeenPinged = true;
     this.users = [];
     this.restartingNames = [];
 };
@@ -51,8 +52,10 @@ function onRequest(request, response){
         var exists = false;
         for(i in servers){
             var s = servers[i];
-            if(s.serverKey == serverKey)
+            if(s.serverKey == serverKey){
+                s.hasBeenPinged = true;
                 exists = true;
+            }
         }
 
         response.writeHead(202, {"Context-Type": "text/plain"});
@@ -86,6 +89,7 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
+                s.hasBeenPinged = true;
                 console.log("New user requested with the username: " + username + " and the serverkey: " + serverKey);
                 s.users.push(new user(username));
             }
@@ -113,6 +117,7 @@ function onRequest(request, response){
             if(s.serverKey ==  serverKey){
                 //Selected server
                 console.log("Found the server when trying to push track");
+                s.hasBeenPinged = true;
                 console.log("User size: " + s.users.length);
                 for(x in s.users){
                     var u = s.users[x];
@@ -132,6 +137,7 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
+                s.hasBeenPinged = true;
                 for(x in s.users){
                     var u = s.users[x];
 
@@ -159,6 +165,7 @@ function onRequest(request, response){
             var s = servers[i];
             console.log("Checking serverkey: " + s.serverKey);
             if(s.serverKey ==  serverKey){
+                s.hasBeenPinged = true;
                 //Selected server
                 console.log("Found the server when trying to push track");
                 console.log("User size: " + s.users.length);
@@ -198,6 +205,7 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
+                s.hasBeenPinged = true;
                 for(x in s.users){
                     var u = s.users[x];
                     u.chosenSongId = -1;
@@ -250,6 +258,20 @@ function getKey(){
         return text;
 }
 
+setInterval(function(){
+for(i in servers){
+    var s = servers[i];
+    if(!s.hasBeenPinged){
+        console.log("Getting rid of server due to inactivity with the key: " + s.serverKey);
+        servers.splice(i, 1);
+    }
+    else{
+        s.hasBeenPinged = false;
+    }
+}
+
+
+},300000);
 var port = Number(process.env.PORT || 8000);
 http.createServer(onRequest).listen(port);
 console.log("The server is running");
