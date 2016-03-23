@@ -116,7 +116,6 @@ function onRequest(request, response){
                 name = name.replace('+', ' ');
         }
 
-
         var trackId = request.url.split("&id=")[1].split("&key=")[0];
 
         var serverKey = request.url.split("&key=")[1];
@@ -219,10 +218,6 @@ function onRequest(request, response){
                 s.hasBeenPinged = true;
                 for(x in s.users){
                     var u = s.users[x];
-                    u.chosenSongId = -1;
-                    u.votedSongId = -1;
-                    u.hasChosen = false;
-                    u.hasVoted = false;
                     if(isServer == 'true'){
                         s.restartingNames.push(u.userName);
                     }
@@ -231,6 +226,10 @@ function onRequest(request, response){
                         for(z in s.restartingNames){
                             var restartName = s.restartingNames[z];
                             if(restartName == u.userName){
+                                u.chosenSongId = -1;
+                                u.votedSongId = -1;
+                                u.hasChosen = false;
+                                u.hasVoted = false;
                                 s.restartingNames = s.restartingNames.splice(z, 1);
                                 response.write('restart');
                                 wroteSomething = true;
