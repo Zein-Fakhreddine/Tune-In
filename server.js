@@ -236,10 +236,13 @@ function onRequest(request, response){
                                 break;
                             }
                         }
-
-                        if(!wroteSomething)
-                            response.write("Dont restart");
                     }
+                }
+                if(isServer != 'true'){
+                    if(wroteSomething)
+                        response.write('restart');
+                    else
+                        response.write("Dont restart");
                 }
             }
 
