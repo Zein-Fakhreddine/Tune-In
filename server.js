@@ -12,6 +12,7 @@ var server = function(name, key){
     this.hasBeenPinged = true;
     this.users = [];
     this.restartingNames = [];
+    this.serverIteration = 0;
 };
 
 var user = function (userName) {
@@ -152,7 +153,7 @@ function onRequest(request, response){
                     var u = s.users[x];
 
                     if(u.chosenSongId)
-                        response.write(u.chosenSongId.toString() + ",");
+                        response.write(u.chosenSongId.toString()  + "I" + s.serverIteration + ",");
                 }
             }
         }
@@ -215,6 +216,8 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
+                if(isServer == 'true')
+                    s.serverIteration++;
                 s.hasBeenPinged = true;
                 for(x in s.users){
                     var u = s.users[x];
