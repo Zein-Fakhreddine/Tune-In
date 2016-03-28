@@ -19,7 +19,7 @@ var user = function (userName) {
     this.userName = userName;
     this.hasChosen = false;
     this.hasVoted = false;
-    this.chosenSongId = -1;
+    this.chosenSongId = "-1";
     this.votedSongId = -1;
 };
 
@@ -134,7 +134,7 @@ function onRequest(request, response){
                     var u = s.users[x];
                     console.log("Checking user with name: " + u.userName);
                     if(u.userName == name){
-                        u.chosenSongId = parseInt(trackId, 10);
+                        u.chosenSongId = trackId + "I" + s.serverIteration;
                         console.log("Added users chosen song with the the name: " + u.userName + "and the chosen song id: " + u.chosenSongId);
                     }
                 }
@@ -153,7 +153,7 @@ function onRequest(request, response){
                     var u = s.users[x];
 
                     if(u.chosenSongId)
-                        response.write(u.chosenSongId.toString()  + "I" + s.serverIteration + ",");
+                        response.write(u.chosenSongId + ",");
                 }
             }
         }
@@ -224,7 +224,7 @@ function onRequest(request, response){
                     if(isServer == 'true'){
                         s.restartingNames.push(u.userName);
                         if(u.userName == name){
-                            u.chosenSongId = -1;
+                            u.chosenSongId = "-1";
                             u.votedSongId = -1;
                             u.hasChosen = false;
                             u.hasVoted = false;
@@ -234,7 +234,7 @@ function onRequest(request, response){
                         for(z = 0; z <  s.restartingNames.length; z++){
                             var restartName = s.restartingNames[z];
                             if(restartName == u.userName){
-                                u.chosenSongId = -1;
+                                u.chosenSongId = "-1";
                                 u.votedSongId = -1;
                                 u.hasChosen = false;
                                 u.hasVoted = false;
