@@ -134,7 +134,7 @@ function onRequest(request, response){
                     var u = s.users[x];
                     console.log("Checking user with name: " + u.userName);
                     if(u.userName == name){
-                        u.chosenSongId = trackId + "I" + s.serverIteration;
+                        u.chosenSongId = trackId + "ITE" + s.serverIteration;
                         console.log("Added users chosen song with the the name: " + u.userName + "and the chosen song id: " + u.chosenSongId);
                     }
                 }
