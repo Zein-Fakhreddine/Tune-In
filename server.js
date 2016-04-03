@@ -20,7 +20,7 @@ var user = function (userName) {
     this.hasChosen = false;
     this.hasVoted = false;
     this.chosenSongId = "-1";
-    this.votedSongId = -1;
+    this.votedSongId = "-1";
 };
 
 var track = function (track_id) {
@@ -183,7 +183,7 @@ function onRequest(request, response){
                     var u = s.users[x];
                     console.log("Checking user with name: " + u.username);
                     if(u.userName == name){
-                        u.votedSongId = parseInt(trackId, 10);
+                        u.votedSongId = trackId
                         console.log("Added users voted song with the the name: " + u.userName + "and the voted song id: " + u.chosenSongId);
                     }
                 }
@@ -225,7 +225,7 @@ function onRequest(request, response){
                         s.restartingNames.push(u.userName);
                         if(u.userName == name){
                             u.chosenSongId = "-1";
-                            u.votedSongId = -1;
+                            u.votedSongId = "-1";
                             u.hasChosen = false;
                             u.hasVoted = false;
                         }
@@ -235,7 +235,7 @@ function onRequest(request, response){
                             var restartName = s.restartingNames[z];
                             if(restartName == u.userName){
                                 u.chosenSongId = "-1";
-                                u.votedSongId = -1;
+                                u.votedSongId = "-1";
                                 u.hasChosen = false;
                                 u.hasVoted = false;
                                 s.restartingNames.splice(z, 1);
