@@ -250,7 +250,7 @@ function onRequest(request, response){
                 }
                 if(isServer != 'true'){
                     if(wroteSomething)
-                        response.write('restart');
+                        response.write('restart ' + "&ITE=" + s.serverIteration);
                     else
                         response.write("Don't restart");
                 }
