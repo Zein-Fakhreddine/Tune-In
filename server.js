@@ -195,10 +195,10 @@ function onRequest(request, response){
 
     if(index == 'getvotes'){
         var serverKey = request.url.split("&key=")[1];
+        response.writeHead(202, {"Context-Type": "text/plain"});
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
-                response.writeHead(202, {"Context-Type": "text/plain"});
                 for(x in s.users){
                     var u = s.users[x];
                     if(u.votedSongId)
