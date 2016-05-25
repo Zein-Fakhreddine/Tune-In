@@ -1,3 +1,4 @@
+
 var http = require('http');
 var fs = require("fs");
 
@@ -12,14 +13,15 @@ var server = function(name, key){
     this.hasBeenPinged = true;
     this.users = [];
     this.restartingNames = [];
+    this.serverIteration = 0;
 };
 
 var user = function (userName) {
     this.userName = userName;
     this.hasChosen = false;
     this.hasVoted = false;
-    this.chosenSongId = -1;
-    this.votedSongId = -1;
+    this.chosenSongId = "-1";
+    this.votedSongId = "-1";
 };
 
 var track = function (track_id) {
@@ -66,7 +68,7 @@ function onRequest(request, response){
         var  serverName = request.url.split("=")[1];''
         for(var i  =0; i < serverName.length; i++){
             if(serverName.charAt(i) == '+')
-               serverName =  serverName.replace('+', ' ');
+                serverName =  serverName.replace('+', ' ');
         }
 
         var key = getKey();
@@ -99,7 +101,8 @@ function onRequest(request, response){
                 if(hasBeenTaken)
                     response.write("ht");
                 else
-                    response.write("gg");
+                    response.write("gg" + " &ITE=" + s.serverIteration);
+
                 s.hasBeenPinged = true;
                 console.log("New user requested with the username: " + username + " and the serverkey: " + serverKey);
                 s.users.push(new user(username));
@@ -133,7 +136,7 @@ function onRequest(request, response){
                     var u = s.users[x];
                     console.log("Checking user with name: " + u.userName);
                     if(u.userName == name){
-                        u.chosenSongId = parseInt(trackId, 10);
+                        u.chosenSongId = trackId + "ITE" + s.serverIteration;
                         console.log("Added users chosen song with the the name: " + u.userName + "and the chosen song id: " + u.chosenSongId);
                     }
                 }
@@ -152,7 +155,7 @@ function onRequest(request, response){
                     var u = s.users[x];
 
                     if(u.chosenSongId)
-                        response.write(u.chosenSongId.toString() + ",");
+                        response.write(u.chosenSongId + ",");
                 }
             }
         }
@@ -182,7 +185,7 @@ function onRequest(request, response){
                     var u = s.users[x];
                     console.log("Checking user with name: " + u.username);
                     if(u.userName == name){
-                        u.votedSongId = parseInt(trackId, 10);
+                        u.votedSongId = trackId
                         console.log("Added users voted song with the the name: " + u.userName + "and the voted song id: " + u.chosenSongId);
                     }
                 }
@@ -215,14 +218,16 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
+                if(isServer == 'true')
+                    s.serverIteration++;
                 s.hasBeenPinged = true;
                 for(x in s.users){
                     var u = s.users[x];
                     if(isServer == 'true'){
                         s.restartingNames.push(u.userName);
                         if(u.userName == name){
-                            u.chosenSongId = -1;
-                            u.votedSongId = -1;
+                            u.chosenSongId = "-1";
+                            u.votedSongId = "-1";
                             u.hasChosen = false;
                             u.hasVoted = false;
                         }
@@ -231,8 +236,8 @@ function onRequest(request, response){
                         for(z = 0; z <  s.restartingNames.length; z++){
                             var restartName = s.restartingNames[z];
                             if(restartName == u.userName){
-                                u.chosenSongId = -1;
-                                u.votedSongId = -1;
+                                u.chosenSongId = "-1";
+                                u.votedSongId = "-1";
                                 u.hasChosen = false;
                                 u.hasVoted = false;
                                 s.restartingNames.splice(z, 1);
@@ -277,16 +282,16 @@ function getKey(){
 }
 
 setInterval(function(){
-for(i in servers){
-    var s = servers[i];
-    if(!s.hasBeenPinged){
-        console.log("Getting rid of server due to inactivity with the key: " + s.serverKey);
-        servers.splice(i, 1);
+    for(i in servers){
+        var s = servers[i];
+        if(!s.hasBeenPinged){
+            console.log("Getting rid of server due to inactivity with the key: " + s.serverKey);
+            servers.splice(i, 1);
+        }
+        else{
+            s.hasBeenPinged = false;
+        }
     }
-    else{
-        s.hasBeenPinged = false;
-    }
-}
 
 
 },300000);
