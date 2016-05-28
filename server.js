@@ -270,6 +270,7 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             console.log("Checking serverkey: " + s.serverKey);
+            var serverKey = request.url.split("&key=")[1];
             if(s.serverKey ==  serverKey){
                 s.hasBeenPinged = true;
                 //Selected server
