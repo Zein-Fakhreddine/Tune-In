@@ -14,6 +14,7 @@ var server = function(name, key){
     this.users = [];
     this.restartingNames = [];
     this.serverIteration = 0;
+    this.stopedServer = false;
 };
 
 var user = function (userName) {
@@ -249,15 +250,34 @@ function onRequest(request, response){
                     }
                 }
                 if(isServer != 'true'){
-                    if(wroteSomething)
-                        response.write('restart ' + "&ITE=" + s.serverIteration);
-                    else
-                        response.write("Don't restart");
+                    if(s.stopedServer){
+                        response.write('stoped');
+                    } else{
+                        if(wroteSomething)
+                            response.write('restart ' + "&ITE=" + s.serverIteration);
+                        else
+                            response.write("Don't restart");
+                    }
+
+
                 }
             }
 
         }
     }
+
+    if(index == 'stopsession'){
+        for(i in servers){
+            var s = servers[i];
+            console.log("Checking serverkey: " + s.serverKey);
+            if(s.serverKey ==  serverKey){
+                s.hasBeenPinged = true;
+                //Selected server
+                s.stopedServer = true;
+            }
+        }
+    }
+
     response.end();
 }
 
