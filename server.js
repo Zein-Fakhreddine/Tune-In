@@ -101,7 +101,7 @@ function onRequest(request, response){
                 if(hasBeenTaken)
                     response.write("ht");
                 else
-                    response.write("gg" + " &ITE=" + s.serverIteration);
+                    response.write("gg" + " &ITE=" + s.serverIteration + "&SES=" + s.serverName);
 
                 s.hasBeenPinged = true;
                 console.log("New user requested with the username: " + username + " and the serverkey: " + serverKey);
