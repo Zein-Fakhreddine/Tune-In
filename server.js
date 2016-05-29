@@ -279,6 +279,25 @@ function onRequest(request, response){
         }
     }
 
+    if(index == 'serverinfo'){
+        for(i in servers){
+            var s = servers[i];
+            console.log("Checking serverkey: " + s.serverKey);
+            var serverKey = request.url.split("&key=")[1];
+            if(s.serverKey ==  serverKey){
+                response.writeHead(202, {"Context-Type": "text/plain"});
+                var obj = new Object();
+                obj.serverName = s.serverName;
+                obj.serverKey = s.serverKey;
+                obj.usercount = s.users.length;
+                obj.stoped = s.stopedServer;
+                obj.serverIteration = s.serverIteration;
+                obj.users = s.users;
+                response.write(JSON.stringify(obj));
+            }
+        }
+    }
+
     response.end();
 }
 
