@@ -293,7 +293,7 @@ function onRequest(request, response){
                 obj.stoped = s.stopedServer;
                 obj.serverIteration = s.serverIteration;
                 obj.users = s.users;
-                response.write(JSON.stringify(obj));
+                response.write(JSON.stringify(s));
             }
         }
     }
