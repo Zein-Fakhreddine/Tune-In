@@ -15,6 +15,7 @@ var server = function(name, key){
     this.restartingNames = [];
     this.serverIteration = 0;
     this.stopedServer = false;
+    this.filterExplicit = false;
 };
 
 var user = function (userName) {
@@ -66,7 +67,7 @@ function onRequest(request, response){
     }
 
     if(index == 'host') {
-        var  serverName = request.url.split("=")[1];''
+        var  serverName = request.url.split("=")[1];
         for(var i  =0; i < serverName.length; i++){
             if(serverName.charAt(i) == '+')
                 serverName =  serverName.replace('+', ' ');
@@ -78,6 +79,16 @@ function onRequest(request, response){
 
         response.writeHead(202, {"Context-Type": "text/plain"});
         response.write(key);
+    }
+
+    if(index == 'filter'){
+        var serverKey = request.url.split("&key=")[1];
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverKey == serverKey)
+                s.filterExplicit = !s.filterExplicit;
+
+        }
     }
 
     if(index == 'user') {
@@ -292,6 +303,7 @@ function onRequest(request, response){
                 obj.usercount = s.users.length;
                 obj.stoped = s.stopedServer;
                 obj.serverIteration = s.serverIteration;
+                obj.filterExplicit = s.filterExplicit;
                 obj.users = s.users;
                 response.write(JSON.stringify(obj));
             }
