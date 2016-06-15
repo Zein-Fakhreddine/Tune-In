@@ -85,8 +85,15 @@ function onRequest(request, response){
         var serverKey = request.url.split("&key=")[1];
         for(i in servers){
             var s = servers[i];
-            if(s.serverKey == serverKey)
-                s.filterExplicit = !s.filterExplicit;
+            if(s.serverKey == serverKey){
+                var explicit = request.url.split("&explicit=")[1].split("&key=")[0];
+                if(explicit == "true")
+                    s.filterExplicit = true;
+                else
+                    s.filterExplicit = false;
+            }
+
+
 
         }
     }
