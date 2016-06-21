@@ -4,7 +4,7 @@ var fs = require("fs");
 
 var servers = [];
 
-var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 var server = function(name, key){
     console.log("Server created with the server key: " + key + " and the servername: " + name);
@@ -16,20 +16,16 @@ var server = function(name, key){
     this.serverIteration = 0;
     this.stopedServer = false;
     this.filterExplicit = false;
+    this.currentPlayingSongId = "-1";
+    this.currentSongPaused = true;
 };
 
-var user = function (userName) {
-    this.userName = userName;
-    this.hasChosen = false;
-    this.hasVoted = false;
+var user = function (name) {
+    this.userName = name;
     this.chosenSongId = "-1";
     this.votedSongId = "-1";
 };
 
-var track = function (track_id) {
-    this.track_id = track_id;
-    this.votes = 0;
-};
 
 
 //404 response
@@ -52,7 +48,7 @@ function onRequest(request, response){
     }
 
     if(index == 'servercheck'){
-        var serverKey = request.url.split("&key=")[1];
+        var serverKey = getvalue(request.url, "key");
         var exists = false;
         for(i in servers){
             var s = servers[i];
@@ -67,7 +63,7 @@ function onRequest(request, response){
     }
 
     if(index == 'host') {
-        var  serverName = request.url.split("=")[1];
+        var  serverName = getvalue(request.url, 'name');
         for(var i  =0; i < serverName.length; i++){
             if(serverName.charAt(i) == '+')
                 serverName =  serverName.replace('+', ' ');
@@ -82,31 +78,29 @@ function onRequest(request, response){
     }
 
     if(index == 'filter'){
-        var serverKey = request.url.split("&key=")[1];
+        var serverKey = getKey(request.url, 'key');
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
-                var explicit = request.url.split("&explicit=")[1].split("&key=")[0];
+                var explicit = getvalue(request.url, 'explicit');
                 if(explicit == "true")
                     s.filterExplicit = true;
                 else
                     s.filterExplicit = false;
             }
 
-
-
         }
     }
 
     if(index == 'user') {
-        var  username = request.url.split("=")[1].split("&")[0];
-
+        var  username = getvalue(request.url, 'name');
+        var serverKey = getvalue(request.url, 'key');
         for(var i  =0; i < username.length; i++){
             if(username.charAt(i) == '+')
                 username = username.replace('+', ' ');
         }
 
-        var serverKey = request.url.split("&key=")[1];
+
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
@@ -132,15 +126,15 @@ function onRequest(request, response){
     }
 
     if(index == 'userschosensong'){
-        var name = request.url.split("=")[1].split("&")[0];
+        var name = getvalue(request.url, 'name');
         for(var i  =0; i < name.length; i++){
             if(name.charAt(i) == '+')
                 name = name.replace('+', ' ');
         }
 
-        var trackId = request.url.split("&id=")[1].split("&key=")[0];
+        var trackId = getvalue(request.url, 'id');
 
-        var serverKey = request.url.split("&key=")[1];
+        var serverKey = getvalue(request.url, 'key');
         console.log("The name is: " + name);
         console.log("The serverkey is: " + serverKey);
         for(i in servers){
@@ -165,7 +159,7 @@ function onRequest(request, response){
 
     if(index == 'getchosensongs'){
         response.writeHead(202, {"Context-Type": "text/plain"});
-        var serverKey = request.url.split("&key=")[1];
+        var serverKey = getvalue(request.url, 'key');
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
@@ -180,16 +174,27 @@ function onRequest(request, response){
         }
     }
 
+    if(index == 'currentsong'){
+        var serverKey = getKey('key');
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverKey == serverKey){
+                s.currentPlayingSongId = getKey('currentsongid');
+                s.currentSongPaused = getKey('currentsongpaused');
+            }
+        }
+    }
+
     if(index == 'uservotedsong'){
-        var name = request.url.split("=")[1].split("&")[0];
+        var name = getvalue(request.url, 'name');
         for(var i  =0; i < name.length; i++){
             if(name.charAt(i) == '+')
                 name = name.replace('+', ' ');
         }
 
-        var trackId = request.url.split("&id=")[1].split("&key=")[0];
+        var trackId = getvalue(request.url, 'id');
 
-        var serverKey = request.url.split("&key=")[1];
+        var serverKey = getvalue(request.url, 'key');
         console.log("The name is: " + name);
         console.log("The serverkey is: " + serverKey);
         for(i in servers){
@@ -213,7 +218,7 @@ function onRequest(request, response){
     }
 
     if(index == 'getvotes'){
-        var serverKey = request.url.split("&key=")[1];
+        var serverKey = getvalue(request.url, 'key');
         response.writeHead(202, {"Context-Type": "text/plain"});
         for(i in servers){
             var s = servers[i];
@@ -230,9 +235,9 @@ function onRequest(request, response){
     if(index == 'restart'){
         var wroteSomething = false;
         response.writeHead(202, {"Context-Type": "text/plain"});
-        var serverKey = request.url.split("&key=")[1];
-        var name = request.url.split("=")[1].split("&")[0];
-        var isServer = request.url.split("&server=")[1].split("&key=")[0];
+        var serverKey = getvalue(request.url, 'key');
+        var name = getvalue(request.url, 'name');
+        var isServer = getvalue(request.url, 'server')
         console.log("Restarting with the serverkey: " + serverKey + ' and the username: ' + name + " and isServer is: " + isServer);
         for(i in servers){
             var s = servers[i];
@@ -285,10 +290,10 @@ function onRequest(request, response){
     }
 
     if(index == 'stopsession'){
+        var serverKey = getvalue(request.url, 'key');
         for(i in servers){
             var s = servers[i];
             console.log("Checking serverkey: " + s.serverKey);
-            var serverKey = request.url.split("&key=")[1];
             if(s.serverKey ==  serverKey){
                 s.hasBeenPinged = true;
                 //Selected server
@@ -301,7 +306,7 @@ function onRequest(request, response){
         for(i in servers){
             var s = servers[i];
             console.log("Checking serverkey: " + s.serverKey);
-            var serverKey = request.url.split("&key=")[1];
+            var serverKey = getvalue(request.url, 'key');
             if(s.serverKey ==  serverKey){
                 response.writeHead(202, {"Context-Type": "text/plain"});
                 var obj = new Object();
@@ -312,6 +317,8 @@ function onRequest(request, response){
                 obj.serverIteration = s.serverIteration;
                 obj.filterExplicit = s.filterExplicit;
                 obj.users = s.users;
+                obj.currentPlayingSongId = s.currentPlayingSongId;
+                obj.currentSongPaused = s.currentSongPaused;
                 response.write(JSON.stringify(obj));
             }
         }
@@ -354,6 +361,12 @@ setInterval(function(){
 
 
 },300000);
+
+function getvalue(request, key){
+    return request.split("&" + key + "=")[1].split("&")[0];
+}
+
+
 var port = Number(process.env.PORT || 8000);
 http.createServer(onRequest).listen(port);
 console.log("The server is running");
