@@ -180,7 +180,11 @@ function onRequest(request, response){
             var s = servers[i];
             if(s.serverKey == serverKey){
                 s.currentPlayingSongId = getKey('currentsongid');
-                s.currentSongPaused = getKey('currentsongpaused');
+                var isPaused = getKey('currentsongpaused');
+                if(isPaused == 'true')
+                    s.currentSongPaused = true;
+                else
+                    s.currentSongPaused = false;
             }
         }
     }
