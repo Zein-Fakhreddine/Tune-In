@@ -175,12 +175,12 @@ function onRequest(request, response){
     }
 
     if(index == 'currentsong'){
-        var serverKey = getvalue('key');
+        var serverKey = getvalue(request.url, 'key');
         for(i in servers){
             var s = servers[i];
             if(s.serverKey == serverKey){
-                s.currentPlayingSongId = getvalue('currentsongid');
-                var isPaused = getvalue('currentsongpaused');
+                s.currentPlayingSongId = getvalue(request.url,'currentsongid');
+                var isPaused = getvalue(request.url,'currentsongpaused');
                 if(isPaused == 'true')
                     s.currentSongPaused = true;
                 else
