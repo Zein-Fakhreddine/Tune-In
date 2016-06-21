@@ -6,7 +6,7 @@ var servers = [];
 
 var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-var server = function(name, key){
+var server = function(name, key, ip){
     console.log("Server created with the server key: " + key + " and the servername: " + name);
     this.serverName = name;
     this.serverKey = key;
@@ -18,6 +18,7 @@ var server = function(name, key){
     this.filterExplicit = false;
     this.currentPlayingSongId = "-1";
     this.currentSongPaused = true;
+    this.serverIp = ip;
 };
 
 var user = function (name) {
@@ -63,14 +64,19 @@ function onRequest(request, response){
     }
 
     if(index == 'host') {
-        var  serverName = getvalue(request.url, 'name');
+        if(!getvalue(request.url, 'name')){
+            response.end();
+            return;
+        }
+
+        var serverName = getvalue(request.url, 'name');
         for(var i  =0; i < serverName.length; i++){
             if(serverName.charAt(i) == '+')
                 serverName =  serverName.replace('+', ' ');
         }
 
         var key = getKey();
-        servers.push(new server(serverName, key));
+        servers.push(new server(serverName, key, request.connection.remoteAddress));
         console.log("New server added with name: " + serverName);
 
         response.writeHead(202, {"Context-Type": "text/plain"});
@@ -121,8 +127,17 @@ function onRequest(request, response){
                 s.users.push(new user(username));
             }
         }
+    }
 
+    if(index == 'serversoninternet'){
+        var serversOnInternet = [];
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverIp == request.connection.remoteAddress)
+                serversOnInternet.push(s);
+        }
 
+        response.write(JSON.stringify(serversOnInternet));
     }
 
     if(index == 'userschosensong'){
@@ -367,7 +382,8 @@ setInterval(function(){
 },300000);
 
 function getvalue(request, key){
-    return request.split("&" + key + "=")[1].split("&")[0];
+    if(request.split("&" + key + "=")[1])
+        return request.split("&" + key + "=")[1].split("&")[0];
 }
 
 
