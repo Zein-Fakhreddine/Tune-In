@@ -1,4 +1,3 @@
-
 var http = require('http');
 var fs = require("fs");
 
@@ -10,7 +9,6 @@ var server = function(name, key, ip){
     console.log("Server created with the server key: " + key + " and the servername: " + name);
     this.serverName = name;
     this.serverKey = key;
-    this.serverIp = ip;
     this.hasBeenPinged = true;
     this.users = [];
     this.restartingNames = [];
@@ -47,7 +45,6 @@ function onRequest(request, response){
     if(index == 'ping'){
         response.writeHead(202, {"Context-Type": "text/plain"});
         response.write('pong');
-        response.end();
     }
 
     if(index == 'servercheck'){
@@ -63,7 +60,6 @@ function onRequest(request, response){
 
         response.writeHead(202, {"Context-Type": "text/plain"});
         response.write(exists.toString());
-        response.end();
     }
 
     if(index == 'host') {
@@ -79,20 +75,11 @@ function onRequest(request, response){
         }
 
         var key = getKey();
+        servers.push(new server(serverName, key, request.connection.remoteAddress));
+        console.log("New server added with name: " + serverName);
 
-        var ipHttp = require('http');
-
-        ipHttp.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
-            resp.on('data', function(ip) {
-                servers.push(new server(serverName, key, request.connection.remoteAddress));
-
-                console.log("New server added with name: " + serverName);
-                response.writeHead(202, {"Context-Type": "text/plain"});
-                response.write(key);
-                response.end();
-            });
-        });
-
+        response.writeHead(202, {"Context-Type": "text/plain"});
+        response.write(key);
     }
 
     if(index == 'filter'){
@@ -139,31 +126,17 @@ function onRequest(request, response){
                 s.users.push(new user(username));
             }
         }
-        response.end();
     }
 
     if(index == 'serversoninternet'){
+        var serversOnInternet = [];
+        for(i in servers){
+            var s = servers[i];
+            if(s.serverIp == request.connection.remoteAddress)
+                serversOnInternet.push(s);
+        }
 
-        var ipHttp = require('http');
-        ipHttp.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
-            resp.on('data', function(ip) {
-
-                var serversOnInternet = [];
-
-                for(i in servers){
-                    var s = servers[i];
-                    if(s.serverIp == ip)
-                        serversOnInternet.push(s);
-                }
-
-                response.write(JSON.stringify(serversOnInternet));
-                response.end();
-            });
-        });
-
-
-
-
+        response.write(JSON.stringify(serversOnInternet));
     }
 
     if(index == 'userschosensong'){
@@ -213,7 +186,6 @@ function onRequest(request, response){
                 }
             }
         }
-        response.end();
     }
 
     if(index == 'currentsong'){
@@ -276,7 +248,6 @@ function onRequest(request, response){
                 }
             }
         }
-        response.end();
     }
 
     if(index == 'restart'){
@@ -334,7 +305,6 @@ function onRequest(request, response){
             }
 
         }
-        response.end();
     }
 
     if(index == 'stopsession'){
@@ -368,11 +338,11 @@ function onRequest(request, response){
                 obj.currentPlayingSongId = s.currentPlayingSongId;
                 obj.currentSongPaused = s.currentSongPaused;
                 response.write(JSON.stringify(obj));
-                response.end();
             }
         }
     }
 
+    response.end();
 }
 
 function getKey(){
