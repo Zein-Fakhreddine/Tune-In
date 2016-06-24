@@ -5,7 +5,10 @@
 var http = require('http');
 
 function  onRequest(request, response){
-    var ip = request.connection.remoteAddress;
+    var ip = request.headers['x-forwarded-for'] ||
+        request.connection.remoteAddress ||
+        request.socket.remoteAddress ||
+        request.connection.socket.remoteAddress;
     console.log(ip);
     response.end();
 }

@@ -75,7 +75,11 @@ function onRequest(request, response){
         }
 
         var key = getKey();
-        servers.push(new server(serverName, key, request.connection.remoteAddress));
+        var ip = request.headers['x-forwarded-for'] ||
+            request.connection.remoteAddress ||
+            request.socket.remoteAddress ||
+            request.connection.socket.remoteAddress;
+        servers.push(new server(serverName, key, ip));
         console.log("New server added with name: " + serverName);
 
         response.writeHead(202, {"Context-Type": "text/plain"});
@@ -130,9 +134,13 @@ function onRequest(request, response){
 
     if(index == 'serversoninternet'){
         var serversOnInternet = [];
+        var ip = request.headers['x-forwarded-for'] ||
+            request.connection.remoteAddress ||
+            request.socket.remoteAddress ||
+            request.connection.socket.remoteAddress;;
         for(i in servers){
             var s = servers[i];
-            if(s.serverIp == request.connection.remoteAddress)
+            if(s.serverIp == ip)
                 serversOnInternet.push(s);
         }
 
