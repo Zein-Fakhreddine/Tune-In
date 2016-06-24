@@ -140,8 +140,19 @@ function onRequest(request, response){
             request.connection.socket.remoteAddress;;
         for(i in servers){
             var s = servers[i];
-            if(s.serverIp == ip)
-                serversOnInternet.push(s);
+            if(s.serverIp == ip){
+                var obj = new Object();
+                obj.serverName = s.serverName;
+                obj.serverKey = s.serverKey;
+                obj.usercount = s.users.length;
+                obj.stoped = s.stopedServer;
+                obj.serverIteration = s.serverIteration;
+                obj.filterExplicit = s.filterExplicit;
+                obj.users = s.users;
+                obj.currentPlayingSongId = s.currentPlayingSongId;
+                obj.currentSongPaused = s.currentSongPaused;
+            }
+                serversOnInternet.push(obj);
         }
 
         response.write(JSON.stringify(serversOnInternet));
