@@ -3,7 +3,7 @@ var fs = require("fs");
 
 var servers = [];
 
-var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 var server = function(name, key){
     console.log("Server created with the server key: " + key + " and the servername: " + name);
@@ -49,11 +49,11 @@ function onRequest(request, response){
     }
 
     if(index == 'servercheck'){
-        var serverKey = request.url.split("&key=")[1];
+        var key = request.url.split("&key=")[1];
         var exists = false;
         for(i in servers){
             var s = servers[i];
-            if(s.serverKey == serverKey){
+            if(s.serverKey == key){
                 s.hasBeenPinged = true;
                 exists = true;
             }
@@ -192,10 +192,10 @@ function onRequest(request, response){
     }
 
     if(index == 'getvotes'){
-        var serverKey = request.url.split("&key=")[1];
+        var key = request.url.split("&key=")[1];
         for(i in servers){
             var s = servers[i];
-            if(s.serverKey == serverKey){
+            if(s.serverKey == key){
                 response.writeHead(202, {"Context-Type": "text/plain"});
                 for(x in s.users){
                     var u = s.users[x];
