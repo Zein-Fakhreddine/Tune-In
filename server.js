@@ -4,13 +4,20 @@ var fs = require('fs'),
     port = Number(process.env.PORT || 8000),
     Session = require('./Session.js');
 
-app.use(express.static("./public"));
+app.use(express.static('./public'));
 
 //Routes
-app.get("/host&name=:name&filter=:filter", Session.hostSession);
+app.get('/host&name=:name&filter=:filter', Session.hostSession);
 app.get('/sessionsonnetwork', Session.getSessionsOnNetwork);
-app.get("/user&name=:name&key=:key",Session.addUser);
-app.get("/userchosentrack&name=:name&id=:id&key=:id", Session.setUserChosenTrack);
+app.get('/user&name=:name&key=:key',Session.addUser);
+app.get('/userchosentrack&name=:name&id=:id&key=:key', Session.setUserChosenTrack);
+app.get('/chosentracks&key=:key', Session.getChosenTracks);
+app.get('/currenttrack&id=:id&paused=:paused&key=:key', Session.setCurrentTrack);
+app.get('/uservotedtrack&name=:name&id=:id&key=:key', Session.setUserVotedTrack);
+app.get('/votedtracks&key=:key', Session.getVotedTracks);
+app.get('/restart&key=:key', Session.restartSession);
+app.get('/stop&key=:key', Session.stopSession);
+app.get('/sessioninfo&key=:key', Session.sessionInfo);
 
 app.listen(port, function () {
     console.log("Dyanimic Dj server running on: " + port);
@@ -19,25 +26,3 @@ app.listen(port, function () {
 app.use(function(req, res){
    res.redirect('/index.html');
 });
-
-function getSession(key){
-    var index = 0;
-
-    if (key.length == 0) return undefined;
-
-    for (var i = 0; i < key.length; i++) {
-        var char = key.charCodeAt(i) - 65;
-        index += char * ((((i - 4) * -25)) + 1);
-    }
-    return sessions[index];
-}
-
-function generateSessionKey(){
-    var chars = [65, 65, 65, 65, 65];
-    var key = "AAAAA";
-    if(sessions.length == 1)
-        return key;
-    console.log(sessions.length % 5);
-
-
-}
