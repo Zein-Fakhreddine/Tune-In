@@ -1,17 +1,18 @@
-/**
- * Created by Zein's on 6/19/2016.
- */
-//Example input 'key'
-var http = require('http');
-
-function  onRequest(request, response){
-    var ip = request.headers['x-forwarded-for'] ||
-        request.connection.remoteAddress ||
-        request.socket.remoteAddress ||
-        request.connection.socket.remoteAddress;
-    console.log(ip);
-    response.end();
+function hashCode(key) {
+    var hash = 0;
+    if(key.length == 0) return 0;
+    for (var i = 0; i < key.length; i++) {
+        var char = key.charCodeAt(i);
+        hash += (char - 65) * Math.pow(26, (key.length - 1) - i);
+    }
+    return hash;
 }
-var port = Number(process.env.PORT || 8000);
-http.createServer(onRequest).listen(port);
+//83 67 82 70 86
+//8272363
+//11881376
+//11881375
+console.log(hashCode("ZZZZZ"));
 
+//AAAAA = 0
+//AAAAB = 1
+//ZZZZZ = 11881375

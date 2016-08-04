@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="69a9580c-0e7c-405e-b1ad-5089e149c630" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
     </list>
     <ignored path="Tune In Handler.iws" />
@@ -40,6 +41,13 @@
       <file leaf-file-name="server.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="170">
+              <caret line="157" column="0" selection-start-line="156" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+              <folding>
+                <element signature="e#1043#1147#0" expanded="false" />
+                <element signature="e#5023#6280#0" expanded="false" />
+=======
             <state vertical-scroll-proportion="0.62731874">
               <caret line="151" column="50" selection-start-line="151" selection-start-column="50" selection-end-line="151" selection-end-column="50" />
               <folding />
@@ -54,6 +62,7 @@
               <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="10" selection-end-column="48" />
               <folding>
                 <element signature="e#0#42#0" expanded="false" />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
               </folding>
             </state>
           </provider>
@@ -62,8 +71,13 @@
       <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="68">
+              <caret line="4" column="15" selection-start-line="0" selection-start-column="0" selection-end-line="578" selection-end-column="1" />
+=======
             <state vertical-scroll-proportion="0.0">
               <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
               <folding />
             </state>
           </provider>
@@ -98,10 +112,16 @@
       <list>
         <option value="$PROJECT_DIR$/TuneIn.js" />
         <option value="$PROJECT_DIR$/app.js" />
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/Procfile.txt" />
+        <option value="$PROJECT_DIR$/package.json" />
+=======
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/Procfile.txt" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/testing.js" />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         <option value="$PROJECT_DIR$/server.js" />
       </list>
     </option>
@@ -252,9 +272,23 @@
       <created>1457278933410</created>
       <option name="number" value="Default" />
       <updated>1457278933410</updated>
+<<<<<<< HEAD
+      <workItem from="1459201699417" duration="1463000" />
+      <workItem from="1459287663127" duration="749000" />
+      <workItem from="1459565850800" duration="2150000" />
+      <workItem from="1459650176655" duration="2478000" />
+      <workItem from="1459907291371" duration="65000" />
     </task>
     <servers />
   </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="6905000" />
+  </component>
+=======
+    </task>
+    <servers />
+  </component>
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
   <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
@@ -268,13 +302,21 @@
     <frame x="-1928" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
+<<<<<<< HEAD
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25015834" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18387777" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2248996" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+=======
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26623377" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -340,7 +382,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -372,7 +421,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -404,7 +460,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -434,9 +497,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
         <state vertical-scroll-proportion="0.0">
           <caret line="101" column="72" selection-start-line="101" selection-start-column="72" selection-end-line="101" selection-end-column="72" />
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -466,7 +538,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="0">
+          <caret line="101" column="72" selection-start-line="101" selection-start-column="72" selection-end-line="101" selection-end-column="72" />
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+=======
         <state vertical-scroll-proportion="0.0">
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
@@ -492,7 +579,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -516,7 +610,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -540,7 +641,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -564,7 +672,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -588,7 +703,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -612,7 +734,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -636,7 +765,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -659,7 +795,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+<<<<<<< HEAD
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
@@ -697,19 +840,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/testing.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="68">
+          <caret line="4" column="15" selection-start-line="0" selection-start-column="0" selection-end-line="578" selection-end-column="1" />
+          <folding />
+=======
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="10" selection-end-column="48" />
           <folding>
             <element signature="e#0#42#0" expanded="false" />
           </folding>
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="170">
+          <caret line="157" column="0" selection-start-line="156" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+          <folding>
+            <element signature="e#1043#1147#0" expanded="false" />
+            <element signature="e#5023#6280#0" expanded="false" />
+          </folding>
+=======
         <state vertical-scroll-proportion="0.62731874">
           <caret line="151" column="50" selection-start-line="151" selection-start-column="50" selection-end-line="151" selection-end-column="50" />
           <folding />
+>>>>>>> 65a4e5a439c2b4886057996460755c1351395494
         </state>
       </provider>
     </entry>
