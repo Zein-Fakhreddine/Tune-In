@@ -93,6 +93,7 @@ Session.addUser = function (req, res) {
         message.response = "free";
         s._users.push(new User(encode(req.params.name)));
     }
+    console.log('attacks');
     res.send(JSON.stringify(message));
 };
 
