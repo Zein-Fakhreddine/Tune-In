@@ -7,9 +7,12 @@
 <body>
     This is a testing website
     <button  onclick="hostSever()">Host sever</button>
-<input type ="text" name="hName">
+    <button onclick="sendUser()">Add User</button>
+    <label>
+        <input type="text" name="hName">
+    </label>
 
-<script>
+    <script>
     function hostSever(){
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() {
@@ -18,10 +21,21 @@
         }
 
         xmlHttp.open("GET", "", true);
-        xmlHttp.open("GET", "host&name=hello", true); // true for asynchronous
+        xmlHttp.open("GET", "host&name=hello&filter=false", true); // true for asynchronous
         xmlHttp.send(null);
     }
 
+    function sendUser(){
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                console.log(xmlHttp.responseText);
+        }
+
+        xmlHttp.open("GET", "", true);
+        xmlHttp.open("GET", "user&name=cat&key=AAAAA", true); // true for asynchronous
+        xmlHttp.send(null);
+    }
 </script>
 </body>
 </html>

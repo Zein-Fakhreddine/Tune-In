@@ -1,4 +1,18 @@
 /**
+ * The constructor for all hash tables
+ * Generates all the buckets
+ * @param arraySize An optional argument (default 16) that determines the amount of buckets in a table
+ * @constructor
+ */
+function HashTable(arraySize) {
+    arraySize = arraySize || 16;
+    this._buckets = [];
+    this._size = 0;
+    for (var i = 0; i < arraySize; i++)
+        this._buckets[i] = new Bucket();
+}
+
+/**
  * A Bucket contains the nodes for the specific placement of the hash
  * The amount of Buckets are based on the ARRAY_SIZE of the hash
  * @constructor
@@ -20,20 +34,6 @@ var node = function (key, hash, value) {
 };
 
 /**
- * The constructor for all hash tables
- * Generates all the buckets
- * @param arraySize An optional argument (default 16) that determines the amount of buckets in a table
- * @constructor
- */
-function HashTable(arraySize) {
-    arraySize = arraySize || 16;
-    this._buckets = [];
-    this._count = 0;
-    for (var i = 0; i < arraySize; i++)
-        this._buckets[i] = new Bucket();
-}
-
-/**
  * Adds a key value pair to the hash table
  * Generates a hash using the hash function
  * Adds a node to a given buckets
@@ -48,8 +48,9 @@ HashTable.prototype.put = function (key, value) {
     }
     var hash = this.hash(key);
     var index = hash & (this._buckets.length - 1);
+    console.log("Index: " + index);
     this._buckets[index]._nodes.push(new node(key, hash, value));
-    this._count++;
+    this._size++;
     return true;
 };
 
@@ -73,10 +74,10 @@ HashTable.prototype.get = function (key) {
  * @param func
  * @param ctx
  */
-HashTable.prototype.forEach = function(func, ctx){
-  for(var i = 0; i < this._buckets.length; i++)
-      for(var n = 0; n < this._buckets[i]._nodes.length; n++)
-          func.call(ctx || this, this._buckets[i]._nodes[n]._key, this._buckets[i]._nodes[n]._value);
+HashTable.prototype.forEach = function (func, ctx) {
+    for (var i = 0; i < this._buckets.length; i++)
+        for (var n = 0; n < this._buckets[i]._nodes.length; n++)
+            func.call(ctx || this, this._buckets[i]._nodes[n]._key, this._buckets[i]._nodes[n]._value);
 };
 
 /**
@@ -89,8 +90,8 @@ HashTable.prototype.hash = function (key) {
     var hash = 0, i, chr, len;
     if (key.length === 0) return hash;
     for (i = 0, len = key.length; i < len; i++) {
-        chr   = key.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
+        chr = key.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
         hash |= 0; // Convert to 32bit integer
     }
     return hash;
@@ -115,9 +116,9 @@ HashTable.prototype.remove = function (key) {
     var index = hash & (this._buckets.length - 1);
     var nodes = this._buckets[index]._nodes;
     for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i]._key == key && nodes[i]._hash == hash){
+        if (nodes[i]._key == key && nodes[i]._hash == hash) {
             nodes.splice(i, 1);
-            this._count--;
+            this._size--;
             return true;
         }
     }
@@ -127,16 +128,32 @@ HashTable.prototype.remove = function (key) {
 /**
  * Clears all the nodes in each of the buckets
  */
-HashTable.prototype.clear = function(){
-    for(var i = 0; i < this._buckets.length; i++)
-        for(var n = 0; n < this._buckets[i]._nodes.length; n++)
+HashTable.prototype.clear = function () {
+    for (var i = 0; i < this._buckets.length; i++)
+        for (var n = 0; n < this._buckets[i]._nodes.length; n++)
             this._buckets[i]._nodes = [];
 
-    this._count = 0;
+    this._size = 0;
+};
+
+/**
+ * Logs the size of of every node
+ * Used to show how well the hash function is performing
+ */
+HashTable.prototype.logBuckets = function () {
+    var largest = 0;
+    for (var i = 0; i < this._buckets.length; i++) {
+        var length = this._buckets[i]._nodes.length;
+        if(length > largest)
+            largest = length;
+        console.log("Bucket " + i + " Length: " + length);
+    }
+
+    console.log("the largest bucket is: " + largest);
 };
 
 HashTable.prototype.size = function () {
-    return this._count;
+    return this._size;
 };
 
 module.exports = HashTable;
