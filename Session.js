@@ -25,7 +25,9 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
     this._currentPlayingTrackId = "-1";
     this._currentTrackPaused = true;
     this._pinged = false;
+    this.idleCounter();
 }
+
 /**
  * Provides a user in a session based on the name provided
  * @param name The name to match with a user in the session
@@ -46,9 +48,7 @@ Session.prototype.findUser = function (name) {
  */
 Session.hostSession = function (req, res) {
     var key = generateSessionKey();
-    var s = new Session(encode(req.params.name), key, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.params.filter);
-    _sessions.put(key,s) ;
-    s.idleCounter();
+    _sessions.put(key, new Session(encode(req.params.name), key, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.params.filter));
     res.send(key);
     _sessions.logBuckets();
 };
@@ -93,7 +93,6 @@ Session.addUser = function (req, res) {
         message.response = "free";
         s._users.push(new User(encode(req.params.name)));
     }
-    console.log('attacks');
     res.send(JSON.stringify(message));
 };
 
@@ -187,7 +186,7 @@ Session.restartSession = function (req, res) {
  */
 Session.stopSession = function (req, res) {
     var s = _sessions.get(req.params.key);
-    if (s)
+    if(s)
         s._stoppedSession = true;
     res.end();
 };
@@ -245,13 +244,12 @@ Session.prototype.idleCounter = function(){
         time++;
         if(time == IDLE_TIME){
             if(!that._pinged ){
-                clearInterval(this);
                 that._stoppedSession = true;
             } else{
                 that.idleCounter();
                 that._pinged = false;
-                clearInterval(this);
             }
+            clearInterval(this);
         }
     }, 1000);
 };

@@ -1,41 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="scripts/background.js"></script>
+    <script src="scripts/home.js"></script>
+    <script src="scripts/jquery-3.1.0.js"></script>
     <meta charset="UTF-8">
     <title>Tune In Server</title>
 </head>
 <body>
-    This is a testing website
-    <button  onclick="hostSever()">Host sever</button>
-    <button onclick="sendUser()">Add User</button>
+    Host or Join Server
+    <button  onclick="host()">Host sever</button>
     <label>
-        <input type="text" name="hName">
+        <input type="text" id="hName">
+        Username: <input type="text" id="hUser">
+        Filter Explicit Tracks: <input type="checkbox" id="filter">
     </label>
 
-    <script>
-    function hostSever(){
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                console.log(xmlHttp.responseText);
-        }
-
-        xmlHttp.open("GET", "", true);
-        xmlHttp.open("GET", "host&name=hello&filter=false", true); // true for asynchronous
-        xmlHttp.send(null);
-    }
-
-    function sendUser(){
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                console.log(xmlHttp.responseText);
-        }
-
-        xmlHttp.open("GET", "", true);
-        xmlHttp.open("GET", "user&name=cat&key=AAAAA", true); // true for asynchronous
-        xmlHttp.send(null);
-    }
-</script>
 </body>
 </html>
