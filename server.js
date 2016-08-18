@@ -28,7 +28,7 @@ app.get('/uservotedtrack&name=:name&id=:id&key=:key', Session.setUserVotedTrack)
 app.get('/restart&key=:key', Session.restartSession);
 app.get('/stop&key=:key', Session.stopSession);
 app.get('/sessioninfo&key=:key', Session.sessionInfo);
-app.get('/sessionExists&key=:key', Session.sessionExsists);
+app.get('/sessionExists&key=:key', Session.sessionExists);
 
 app.listen(port, function () {
     console.log("Dynamic Dj server running on: " + port);
