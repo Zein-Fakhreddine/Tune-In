@@ -1,7 +1,7 @@
 function User(userName){
-    this._username = userName;
-    this._chosenTrackId = "-1";
-    this._voteTrackId = "-1";
+    this.username = userName;
+    this.chosenTrackId = "-1";
+    this.votedTrackId = "-1";
 }
 
 module.exports = User;
