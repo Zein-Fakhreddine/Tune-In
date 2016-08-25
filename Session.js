@@ -1,10 +1,12 @@
 var hashTable = require('./HashTable.js');
 var User = require('./User.js');
+var mongoose = require('mongoose');
 var encode = require('htmlencode').htmlEncode;
 const IDLE_TIME = 300;
 var _keys = [], //Holds all the keys that can be used again
     _count = 0, //counter of how many times a server has been created (NOT HOW MANY SERVER THEIR ARE)
-    _sessions = new hashTable(); //Hash table to hold all the sessions (SIZE SHOULD BE AROUND 13300)
+    _sessions = new hashTable(),
+    _sessionModel; //Hash table to hold all the sessions (SIZE SHOULD BE AROUND 13300)
 
 /**
  * Session holds all the info for each session on Dynamic Dj
@@ -27,6 +29,20 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
     this._pinged = false;
     this.idleCounter();
 }
+
+Session.loadMongoose = function(callback){
+    mongoose.connect('mongodb://localhost/myapp');
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        var sessionSchema =  mongoose.Schema({
+            session: String
+        });
+
+        _sessionModel = mongoose.model('Session', sessionSchema);
+        callback();
+    });
+};
 
 /**
  * Provides a user in a session based on the name provided
@@ -186,7 +202,7 @@ Session.restartSession = function (req, res) {
  */
 Session.stopSession = function (req, res) {
     var s = _sessions.get(req.params.key);
-    if(s)
+    if (s)
         s._stoppedSession = true;
     res.end();
 };
@@ -197,9 +213,9 @@ Session.stopSession = function (req, res) {
  * Used to keep the function from idling and stopping
  * @param key
  */
-Session.pingSession = function(key){
+Session.pingSession = function (key) {
     var s = _sessions.get(key);
-    if(s)
+    if (s)
         s._pinged = true;
 };
 
@@ -238,14 +254,14 @@ Session.prototype.getServerInfo = function () {
 /**
  * Used to stop sessions that have been idling for more than IDLE_TIME
  */
-Session.prototype.idleCounter = function(){
+Session.prototype.idleCounter = function () {
     var time = 0, that = this;
     setInterval(function () {
         time++;
-        if(time == IDLE_TIME){
-            if(!that._pinged ){
+        if (time == IDLE_TIME) {
+            if (!that._pinged) {
                 that._stoppedSession = true;
-            } else{
+            } else {
                 that.idleCounter();
                 that._pinged = false;
             }
@@ -255,3 +271,5 @@ Session.prototype.idleCounter = function(){
 };
 
 module.exports = Session;
+
+
