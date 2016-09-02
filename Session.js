@@ -1,12 +1,9 @@
-var hashTable = require('./HashTable.js');
 var User = require('./User.js');
-var mongoose = require('mongoose');
 var encode = require('htmlencode').htmlEncode;
 const IDLE_TIME = 300;
 var _keys = [], //Holds all the keys that can be used again
     _count = 0, //counter of how many times a server has been created (NOT HOW MANY SERVER THEIR ARE)
-    _sessions = new hashTable(),
-    _sessionModel; //Hash table to hold all the sessions (SIZE SHOULD BE AROUND 13300)
+    _sessions = {}; //Holds all the sessions
 
 /**
  * Session holds all the info for each session on Dynamic Dj
@@ -30,20 +27,6 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
     this.idleCounter();
 }
 
-Session.loadMongoose = function(callback){
-    mongoose.connect('mongodb://localhost/myapp');
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function() {
-        var sessionSchema =  mongoose.Schema({
-            session: String
-        });
-
-        _sessionModel = mongoose.model('Session', sessionSchema);
-        callback();
-    });
-};
-
 /**
  * Provides a user in a session based on the name provided
  * @param name The name to match with a user in the session
@@ -51,8 +34,8 @@ Session.loadMongoose = function(callback){
  */
 Session.prototype.findUser = function (name) {
     for (var i = 0; i < this._users.length; i++) {
-        if (name == this._users[i]._username)
-            return this._users[i];
+        if (name == this._users[i].username)
+            return name;
     }
 };
 
@@ -64,9 +47,8 @@ Session.prototype.findUser = function (name) {
  */
 Session.hostSession = function (req, res) {
     var key = generateSessionKey();
-    _sessions.put(key, new Session(encode(req.params.name), key, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.params.filter));
+    _sessions[key] = new Session(encode(req.params.name), key, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.params.filter);
     res.send(key);
-    _sessions.logBuckets();
 };
 
 /**
@@ -98,16 +80,17 @@ function generateSessionKey() {
  * @param res responds with a message saying if the username was taken or not
  */
 Session.addUser = function (req, res) {
-    var message = {response: "error"};
-    var s = _sessions.get(req.params.key);
+    var message = {response: "error", sessionName: "error", sessionIteration: -1};
+    var s = _sessions[req.params.key];
     if (s) {
-        if (s.findUser(req.params.name)) {
+        message.sessionIteration = s._sessionIteration;
+        message.sessionName = s._sessionName;
+        if (s.findUser(req.params.name))
             message.response = "used";
-            res.send(JSON.stringify(message));
-            return;
+        else{
+            message.response = "free";
+            s._users.push(new User(encode(req.params.name)));
         }
-        message.response = "free";
-        s._users.push(new User(encode(req.params.name)));
     }
     res.send(JSON.stringify(message));
 };
@@ -121,10 +104,11 @@ Session.addUser = function (req, res) {
 Session.getSessionsOnNetwork = function (req, res) {
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var sessionsOnNetwork = [];
-    _sessions.forEach(function (key, session) {
-        if (session._sessionIp == ip)
-            sessionsOnNetwork.push(session.getServerInfo());
-    });
+    for(var key in _sessions) {
+        var s = _sessions[key];
+        if (s._sessionIp == ip)
+            sessionsOnNetwork.push(s.getSessionInfo());
+    }
     res.send(JSON.stringify(sessionsOnNetwork));
 };
 
@@ -135,11 +119,11 @@ Session.getSessionsOnNetwork = function (req, res) {
  * @param res Ends at the end
  */
 Session.setUserChosenTrack = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         var u = s.findUser(req.params.name);
         if (u)
-            u._chosenTrackId = encode(req.params.id + "ITE" + s._sessionIteration);
+            u.chosenTrackId = encode(req.params.id + "ITE" + s._sessionIteration);
     }
     res.end();
 };
@@ -151,7 +135,7 @@ Session.setUserChosenTrack = function (req, res) {
  * @param res Ends the response at the end
  */
 Session.setCurrentTrack = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         s._currentPlayingTrackId = req.params.id;
         s._currentTrackPaused = (req.params.paused === 'true');
@@ -165,11 +149,11 @@ Session.setCurrentTrack = function (req, res) {
  * @param res ends the response at the end
  */
 Session.setUserVotedTrack = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         var u = s.findUser(req.params.name);
         if (u)
-            u._voteTrackId = encode(req.params.id);
+            u.votedTrackId = encode(req.params.id);
     }
     res.end();
 };
@@ -182,11 +166,11 @@ Session.setUserVotedTrack = function (req, res) {
  * @param res Ends at the end
  */
 Session.restartSession = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         s._sessionIteration++;
         for (var i = 0; i < s._users.length; i++) {
-            var name = s._users[i]._username;
+            var name = s._users[i].username;
             s._users[i] = new User(name);
         }
     }
@@ -201,7 +185,7 @@ Session.restartSession = function (req, res) {
  * @param res Ends at the end to prevent no responses
  */
 Session.stopSession = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s)
         s._stoppedSession = true;
     res.end();
@@ -214,7 +198,7 @@ Session.stopSession = function (req, res) {
  * @param key
  */
 Session.pingSession = function (key) {
-    var s = _sessions.get(key);
+    var s = _sessions[key];
     if (s)
         s._pinged = true;
 };
@@ -226,29 +210,36 @@ Session.pingSession = function (key) {
  * @param res Ends at the end to prevent no responses
  */
 Session.sessionInfo = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
-        res.send(JSON.stringify(s.getServerInfo()));
+        res.send(JSON.stringify(s.getSessionInfo()));
         return;
     }
     res.end();
 };
 
 /**
- * Returns a safe version of the session i.e their is no session IP in this one
- * @returns {{serverName: *, serverKey: *, stopped: boolean, serverIteration: number, filterExplicit: *, users: Array, currentPlayingSongId: string, currentSongPaused: boolean}}
+ * Does a simple check to ensure a session exists
+ * Used client side to only connect users to an existing session
+ * @param req Gets params
+ * @param res Sends true of false based on if the session exists or not
  */
-Session.prototype.getServerInfo = function () {
-    return {
-        serverName: this._sessionName,
-        serverKey: this._sessionKey,
-        stopped: this._stoppedSession,
-        serverIteration: this._sessionIteration,
-        filterExplicit: this._filterExplicitTracks,
-        users: this._users,
-        currentPlayingSongId: this._currentPlayingTrackId,
-        currentSongPaused: this._currentTrackPaused
-    };
+Session.sessionExists = function (req, res) {
+    if(_sessions[req.params.key])
+        res.send('true');
+    else
+        res.send('false');
+};
+
+/**
+ * Returns a safe version of the session i.e their is no session IP in this one
+ * @returns {Session}
+ */
+Session.prototype.getSessionInfo = function () {
+    var sessionInfo = this;
+    delete sessionInfo._pinged;
+    delete sessionInfo._sessionIp;
+    return sessionInfo;
 };
 
 /**
@@ -271,5 +262,3 @@ Session.prototype.idleCounter = function () {
 };
 
 module.exports = Session;
-
-
