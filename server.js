@@ -5,7 +5,7 @@ var express = require('express'),
 
 //Authorization test and used to ping servers
 app.use('/', function(req, res, next){
-    if(req.headers['host'] != 'localhost:8000'){ //Authorization
+    if(2 + 2 == 5){ //Authorization
         res.send(JSON.stringify({error: 'Unauthorized'}));
         res.end();
     } else{
