@@ -1,10 +1,9 @@
-var hashTable = require('./HashTable.js');
 var User = require('./User.js');
 var encode = require('htmlencode').htmlEncode;
 const IDLE_TIME = 300;
 var _keys = [], //Holds all the keys that can be used again
     _count = 0, //counter of how many times a server has been created (NOT HOW MANY SERVER THEIR ARE)
-    _sessions = new hashTable(); //Hash table to hold all the sessions (SIZE SHOULD BE AROUND 13300)
+    _sessions = {}; //Holds all the sessions
 
 /**
  * Session holds all the info for each session on Dynamic Dj
@@ -37,9 +36,8 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
  */
 Session.hostSession = function (req, res) {
     var key = generateSessionKey();
-    _sessions.put(key, new Session(encode(req.params.name), key, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.params.filter));
+    _sessions[key] = new Session(encode(req.params.name), key, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.params.filter);
     res.send(key);
-    _sessions.logBuckets();
 };
 
 /**
@@ -72,17 +70,17 @@ function generateSessionKey() {
  */
 Session.addUser = function (req, res) {
     var message = {response: "error", sessionName: "error", sessionIteration: -1};
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
-        if (s._users[req.params.name]) {
+        message.sessionIteration = s._sessionIteration;
+        message.sessionName = s._sessionName;
+        if (s._users[req.params.name])
             message.response = "used";
-            res.send(JSON.stringify(message));
-            return;
+        else{
+            message.response = "free";
+            var name = encode(req.params.name);
+            s._users[name] = new User(name);
         }
-        message.response = "free";
-        message.sessionIteration = this._sessionIteration;
-        message.sessionName = this._sessionName;
-        s._users[req.params.name, new User(req.params.name)]
     }
     res.send(JSON.stringify(message));
 };
@@ -96,10 +94,11 @@ Session.addUser = function (req, res) {
 Session.getSessionsOnNetwork = function (req, res) {
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var sessionsOnNetwork = [];
-    _sessions.forEach(function (key, session) {
-        if (session._sessionIp == ip)
-            sessionsOnNetwork.push(session.getServerInfo());
-    });
+    for(var key in _sessions) {
+        var s = _sessions[key];
+        if (s._sessionIp == ip)
+            sessionsOnNetwork.push(s.getSessionInfo());
+    }
     res.send(JSON.stringify(sessionsOnNetwork));
 };
 
@@ -110,7 +109,7 @@ Session.getSessionsOnNetwork = function (req, res) {
  * @param res Ends at the end
  */
 Session.setUserChosenTrack = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         var u = s._users[req.params.name];
         if (u)
@@ -126,7 +125,7 @@ Session.setUserChosenTrack = function (req, res) {
  * @param res Ends the response at the end
  */
 Session.setCurrentTrack = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         s._currentPlayingTrackId = req.params.id;
         s._currentTrackPaused = (req.params.paused === 'true');
@@ -140,7 +139,7 @@ Session.setCurrentTrack = function (req, res) {
  * @param res ends the response at the end
  */
 Session.setUserVotedTrack = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         var u = s._users[req.params.name];
         if (u)
@@ -157,13 +156,12 @@ Session.setUserVotedTrack = function (req, res) {
  * @param res Ends at the end
  */
 Session.restartSession = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         s._sessionIteration++;
-        for (var i = 0; i < s._users.length; i++) {
-            var name = s._users[i].username;
-            s._users[i] = new User(name);
-        }
+        for(var name in s._users)
+            s._users[name] = new User(name);
+
     }
     res.end();
 };
@@ -176,8 +174,8 @@ Session.restartSession = function (req, res) {
  * @param res Ends at the end to prevent no responses
  */
 Session.stopSession = function (req, res) {
-    var s = _sessions.get(req.params.key);
-    if(s)
+    var s = _sessions[req.params.key];
+    if (s)
         s._stoppedSession = true;
     res.end();
 };
@@ -188,9 +186,9 @@ Session.stopSession = function (req, res) {
  * Used to keep the function from idling and stopping
  * @param key
  */
-Session.pingSession = function(key){
-    var s = _sessions.get(key);
-    if(s)
+Session.pingSession = function (key) {
+    var s = _sessions[key];
+    if (s)
         s._pinged = true;
 };
 
@@ -201,7 +199,7 @@ Session.pingSession = function(key){
  * @param res Ends at the end to prevent no responses
  */
 Session.sessionInfo = function (req, res) {
-    var s = _sessions.get(req.params.key);
+    var s = _sessions[req.params.key];
     if (s) {
         res.send(JSON.stringify(s.getSessionInfo()));
         return;
@@ -216,7 +214,7 @@ Session.sessionInfo = function (req, res) {
  * @param res Sends true of false based on if the session exists or not
  */
 Session.sessionExists = function (req, res) {
-    if(_sessions.contains(req.params.key))
+    if(_sessions[req.params.key])
         res.send('true');
     else
         res.send('false');
@@ -224,7 +222,7 @@ Session.sessionExists = function (req, res) {
 
 /**
  * Returns a safe version of the session i.e their is no session IP in this one
- * @returns {{serverName: *, serverKey: *, stopped: boolean, serverIteration: number, filterExplicit: *, users: Array, currentPlayingSongId: string, currentSongPaused: boolean}}
+ * @returns {Session}
  */
 Session.prototype.getSessionInfo = function () {
     return {
@@ -242,14 +240,14 @@ Session.prototype.getSessionInfo = function () {
 /**
  * Used to stop sessions that have been idling for more than IDLE_TIME
  */
-Session.prototype.idleCounter = function(){
+Session.prototype.idleCounter = function () {
     var time = 0, that = this;
     setInterval(function () {
         time++;
-        if(time == IDLE_TIME){
-            if(!that._pinged ){
+        if (time == IDLE_TIME) {
+            if (!that._pinged) {
                 that._stoppedSession = true;
-            } else{
+            } else {
                 that.idleCounter();
                 that._pinged = false;
             }
