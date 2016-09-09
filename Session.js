@@ -34,8 +34,10 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
  */
 Session.prototype.findUser = function (name) {
     for (var i = 0; i < this._users.length; i++) {
+        console.log(name);
+        console.log( this._users[i].username);
         if (name == this._users[i].username)
-            return name;
+            return  this._users[i];
     }
 };
 
@@ -120,10 +122,14 @@ Session.getSessionsOnNetwork = function (req, res) {
  */
 Session.setUserChosenTrack = function (req, res) {
     var s = _sessions[req.params.key];
+    console.log(s);
+
     if (s) {
         var u = s.findUser(req.params.name);
+        console.log(u);
         if (u)
             u.chosenTrackId = encode(req.params.id + "ITE" + s._sessionIteration);
+        console.log( encode(req.params.id + "ITE" + s._sessionIteration));
     }
     res.end();
 };
