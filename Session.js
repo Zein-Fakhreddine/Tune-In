@@ -18,7 +18,7 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
     this._sessionKey = sessionKey;
     this._sessionIp = sessionIp;
     this._filterExplicitTracks = filterExplicitTracks;
-    this._users = {};
+    this._users = [];
     this._sessionIteration = 0;
     this._stoppedSession = false;
     this._currentPlayingTrackId = "-1";
@@ -27,6 +27,17 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
     this.idleCounter();
 }
 
+/**
+ * Provides a user in a session based on the name provided
+ * @param name The name to match with a user in the session
+ * @returns {*} Returns the user if it's found
+ */
+Session.prototype.findUser = function (name) {
+    for (var i = 0; i < this._users.length; i++) {
+        if (name == this._users[i].username)
+            return name;
+    }
+};
 
 /**
  * Generates a key
@@ -74,12 +85,11 @@ Session.addUser = function (req, res) {
     if (s) {
         message.sessionIteration = s._sessionIteration;
         message.sessionName = s._sessionName;
-        if (s._users[req.params.name])
+        if (s.findUser(req.params.name))
             message.response = "used";
         else{
             message.response = "free";
-            var name = encode(req.params.name);
-            s._users[name] = new User(name);
+            s._users.push(new User(encode(req.params.name)));
         }
     }
     res.send(JSON.stringify(message));
@@ -111,7 +121,7 @@ Session.getSessionsOnNetwork = function (req, res) {
 Session.setUserChosenTrack = function (req, res) {
     var s = _sessions[req.params.key];
     if (s) {
-        var u = s._users[req.params.name];
+        var u = s.findUser(req.params.name);
         if (u)
             u.chosenTrackId = encode(req.params.id + "ITE" + s._sessionIteration);
     }
@@ -141,7 +151,7 @@ Session.setCurrentTrack = function (req, res) {
 Session.setUserVotedTrack = function (req, res) {
     var s = _sessions[req.params.key];
     if (s) {
-        var u = s._users[req.params.name];
+        var u = s.findUser(req.params.name);
         if (u)
             u.votedTrackId = encode(req.params.id);
     }
@@ -159,9 +169,10 @@ Session.restartSession = function (req, res) {
     var s = _sessions[req.params.key];
     if (s) {
         s._sessionIteration++;
-        for(var name in s._users)
-            s._users[name] = new User(name);
-
+        for (var i = 0; i < s._users.length; i++) {
+            var name = s._users[i].username;
+            s._users[i] = new User(name);
+        }
     }
     res.end();
 };
