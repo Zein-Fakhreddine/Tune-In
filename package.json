@@ -17,7 +17,7 @@
   "dependencies": {
     "express": "4.14.0",
     "htmlencode": "0.0.4",
-    "mongoose ": "4.5.8"
+    "scoket.io ": "1.7.2"
   },
   "bugs": {
     "license": "ISC",

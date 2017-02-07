@@ -3,6 +3,9 @@
 <head>
     <script src="scripts/jquery-3.1.0.js"></script>
     <script src="scripts/background.js"></script>
+    <script src="scripts/session.js"></script>
+    <script src="scripts/spotifyAPI.js"></script>
+
     <meta charset="UTF-8">
     <title>Session</title>
 
@@ -12,6 +15,9 @@
     <label id="username">Username: </label>
 <script>
     loadSession();
+    searchTracks("avicii wake me up", 0, 10, function(result){
+        console.log(result);
+    });
 </script>
 </body>
 </html>

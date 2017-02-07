@@ -1,10 +1,9 @@
-var User = require('./User.js');
-var encode = require('htmlencode').htmlEncode;
+var User = require('./User.js'), encode = require('htmlencode').htmlEncode;
 const IDLE_TIME = 300;
 var _keys = [], //Holds all the keys that can be used again
     _count = 0, //counter of how many times a server has been created (NOT HOW MANY SERVER THEIR ARE)
-    _sessions = {}; //Holds all the sessions
-
+    _sessions = {},
+    _ipKeys = {};
 /**
  * Session holds all the info for each session on Dynamic Dj
  * @param sessionName The sessions name
@@ -48,8 +47,13 @@ Session.prototype.findUser = function (name) {
  * @param res Responds with the key of the server
  */
 Session.hostSession = function (req, res) {
-    var key = generateSessionKey();
-    _sessions[key] = new Session(encode(req.params.name), key, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.params.filter);
+    var key = generateSessionKey(), ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    _sessions[key] = new Session(encode(req.params.name), key,ip, req.params.filter);
+    if(_ipKeys[ip])
+        _ipKeys[ip].push(key);
+    else
+        _ipKeys[ip] = [key];
+
     res.send(key);
 };
 
@@ -91,7 +95,8 @@ Session.addUser = function (req, res) {
             message.response = "used";
         else{
             message.response = "free";
-            s._users.push(new User(encode(req.params.name)));
+            var u = new User(encode(req.params.name));
+            s._users.push(u);
         }
     }
     res.send(JSON.stringify(message));
@@ -106,11 +111,19 @@ Session.addUser = function (req, res) {
 Session.getSessionsOnNetwork = function (req, res) {
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var sessionsOnNetwork = [];
+    /*
+
     for(var key in _sessions) {
         var s = _sessions[key];
         if (s._sessionIp == ip)
             sessionsOnNetwork.push(s.getSessionInfo());
     }
+    */
+    var keys = _ipKeys[ip];
+    if(keys)
+        for(var i = 0; i < keys.length; i++)
+            sessionsOnNetwork.push(_sessions[keys[i]].getSessionInfo());
+
     res.send(JSON.stringify(sessionsOnNetwork));
 };
 
