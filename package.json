@@ -16,8 +16,7 @@
   },
   "dependencies": {
     "express": "4.14.0",
-    "htmlencode": "0.0.4",
-    "scoket.io ": "1.7.2"
+    "htmlencode": "0.0.4"
   },
   "bugs": {
     "license": "ISC",
