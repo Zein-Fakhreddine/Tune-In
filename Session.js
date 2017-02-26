@@ -162,6 +162,14 @@ Session.setCurrentTrack = function (req, res) {
     res.end();
 };
 
+Session.setCurrentTrackState = function(req, res){
+  var s = _sessions[req.params.key];
+  if(s)
+      s._currentTrackPaused = (req.params.paused === 'true');
+
+  res.end();
+};
+
 /**
  * Sets a user voted track id
  * @param req Used to get params
