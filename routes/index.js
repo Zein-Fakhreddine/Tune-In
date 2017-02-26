@@ -21,7 +21,7 @@ router.get('/sessionsonnetwork', Session.getSessionsOnNetwork);
 router.get('/user&name=:name&key=:key',Session.addUser);
 router.get('/userchosentrack&name=:name&id=:id&key=:key', Session.setUserChosenTrack);
 router.get('/currenttrack&id=:id&paused=:paused&key=:key', Session.setCurrentTrack);
-router.get('/currenttrackstatechanged&id=:id&paused=:paused&key=:key', Session.setCurrentTrackState);
+router.get('/currenttrackstatechanged&paused=:paused&key=:key', Session.setCurrentTrackState);
 router.get('/uservotedtrack&name=:name&id=:id&key=:key', Session.setUserVotedTrack);
 router.get('/restart&key=:key', Session.restartSession);
 router.get('/stop&key=:key', Session.stopSession);
