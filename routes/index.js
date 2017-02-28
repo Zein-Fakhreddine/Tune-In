@@ -25,7 +25,7 @@ router.get('/currenttrackstatechanged&paused=:paused&key=:key', Session.setCurre
 router.get('/uservotedtrack&name=:name&id=:id&key=:key', Session.setUserVotedTrack);
 router.get('/restart&key=:key', Session.restartSession);
 router.get('/stop&key=:key', Session.stopSession);
-router.get('/sessioninfo&key=:key', Session.sessionInfo);
+router.get('/sessioninfo&name=:name&key=:key', Session.sessionInfo);
 router.get('/sessionExists&key=:key', Session.sessionExists);
 
 

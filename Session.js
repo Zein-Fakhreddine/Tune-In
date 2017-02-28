@@ -33,8 +33,6 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
  */
 Session.prototype.findUser = function (name) {
     for (var i = 0; i < this._users.length; i++) {
-        console.log(name);
-        console.log( this._users[i].username);
         if (name == this._users[i].username)
             return  this._users[i];
     }
@@ -104,21 +102,12 @@ Session.addUser = function (req, res) {
 
 /**
  * Gets the sessions that match the IP of the request
- * TODO: Find a faster way to get sessions on your network
  * @param req Gets the public IP from the request
  * @param res sends out an JSON array of te sessions found matching the IP
  */
 Session.getSessionsOnNetwork = function (req, res) {
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var sessionsOnNetwork = [];
-    /*
-
-    for(var key in _sessions) {
-        var s = _sessions[key];
-        if (s._sessionIp == ip)
-            sessionsOnNetwork.push(s.getSessionInfo());
-    }
-    */
     var keys = _ipKeys[ip];
     if(keys)
         for(var i = 0; i < keys.length; i++)
@@ -142,7 +131,6 @@ Session.setUserChosenTrack = function (req, res) {
         console.log(u);
         if (u)
             u.chosenTrackId = encode(req.params.id + "ITE" + s._sessionIteration);
-        console.log( encode(req.params.id + "ITE" + s._sessionIteration));
     }
     res.end();
 };
@@ -239,8 +227,12 @@ Session.pingSession = function (key) {
 Session.sessionInfo = function (req, res) {
     var s = _sessions[req.params.key];
     if (s) {
-        res.send(JSON.stringify(s.getSessionInfo()));
-        return;
+        var u = s.findUser(req.params.name);
+        if (u){
+            u._pinged = true;
+            res.send(JSON.stringify(s.getSessionInfo()));
+            return;
+        }
     }
     res.end();
 };
