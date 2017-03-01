@@ -19,7 +19,7 @@ User.prototype.idleChecker = function () {
             that._pinged = false;
         } else
             that._timedOut = true;
-    }, 1000);
+    }, 3000);
 };
 
 module.exports = User;
