@@ -93,7 +93,7 @@ Session.addUser = function (req, res) {
             message.response = "used";
         else{
             message.response = "free";
-            var u = new User(encode(req.params.name));
+            var u = new User(encode(req.params.name), (req.params.host === 'true'));
             s._users.push(u);
         }
     }
@@ -185,8 +185,8 @@ Session.restartSession = function (req, res) {
     if (s) {
         s._sessionIteration++;
         for (var i = 0; i < s._users.length; i++) {
-            var name = s._users[i].username;
-            s._users[i] = new User(name);
+            s._users[i].chosenTrackId = "-1";
+            s._users[i].votedTrackId = "-1";
         }
     }
     res.end();

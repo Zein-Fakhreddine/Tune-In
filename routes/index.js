@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
 //Routes
 router.get('/host&name=:name&filter=:filter', Session.hostSession);
 router.get('/sessionsonnetwork', Session.getSessionsOnNetwork);
-router.get('/user&name=:name&key=:key',Session.addUser);
+router.get('/user&name=:name&ishost=:host&key=:key',Session.addUser);
 router.get('/userchosentrack&name=:name&id=:id&key=:key', Session.setUserChosenTrack);
 router.get('/currenttrack&id=:id&paused=:paused&key=:key', Session.setCurrentTrack);
 router.get('/currenttrackstatechanged&paused=:paused&key=:key', Session.setCurrentTrackState);

@@ -1,5 +1,6 @@
-function User(userName){
+function User(userName, isHost){
     this.username = userName;
+    this.isHost = isHost;
     this.chosenTrackId = "-1";
     this.votedTrackId = "-1";
     this._pinged = true;
