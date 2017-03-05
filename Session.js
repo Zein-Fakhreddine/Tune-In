@@ -33,8 +33,8 @@ function Session(sessionName, sessionKey, sessionIp, filterExplicitTracks) {
  */
 Session.prototype.findUser = function (name) {
     for (var i = 0; i < this._users.length; i++) {
-        if (name == this._users[i].username)
-            return  this._users[i];
+        if (name === this._users[i].username)
+            return this._users[i];
     }
 };
 
@@ -46,8 +46,8 @@ Session.prototype.findUser = function (name) {
  */
 Session.hostSession = function (req, res) {
     var key = generateSessionKey(), ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    _sessions[key] = new Session(encode(req.params.name), key,ip, req.params.filter);
-    if(_ipKeys[ip])
+    _sessions[key] = new Session(encode(req.params.name), key, ip, req.params.filter);
+    if (_ipKeys[ip])
         _ipKeys[ip].push(key);
     else
         _ipKeys[ip] = [key];
@@ -64,7 +64,7 @@ Session.hostSession = function (req, res) {
  */
 function generateSessionKey() {
     var key = "", num = _count;
-    if (_keys.length != 0) {
+    if (_keys.length !== 0) {
         key = _keys[0];
         _keys.splice(0, 1);
         return key;
@@ -91,7 +91,7 @@ Session.addUser = function (req, res) {
         message.sessionName = s._sessionName;
         if (s.findUser(req.params.name))
             message.response = "used";
-        else{
+        else {
             message.response = "free";
             var u = new User(encode(req.params.name), (req.params.host === 'true'));
             s._users.push(u);
@@ -109,8 +109,8 @@ Session.getSessionsOnNetwork = function (req, res) {
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var sessionsOnNetwork = [];
     var keys = _ipKeys[ip];
-    if(keys)
-        for(var i = 0; i < keys.length; i++)
+    if (keys)
+        for (var i = 0; i < keys.length; i++)
             sessionsOnNetwork.push(_sessions[keys[i]].getSessionInfo());
 
     res.send(JSON.stringify(sessionsOnNetwork));
@@ -150,12 +150,12 @@ Session.setCurrentTrack = function (req, res) {
     res.end();
 };
 
-Session.setCurrentTrackState = function(req, res){
-  var s = _sessions[req.params.key];
-  if(s)
-      s._currentTrackPaused = (req.params.paused === 'true');
+Session.setCurrentTrackState = function (req, res) {
+    var s = _sessions[req.params.key];
+    if (s)
+        s._currentTrackPaused = (req.params.paused === 'true');
 
-  res.end();
+    res.end();
 };
 
 /**
@@ -193,7 +193,6 @@ Session.restartSession = function (req, res) {
 };
 
 /**
- * TODO: Figure out how to add session key back to array mostly a client side issue
  * Stops the session
  * sets the stopped session variable to true so the client can read it as true when it gets server info
  * @param req Gets params
@@ -228,7 +227,7 @@ Session.sessionInfo = function (req, res) {
     var s = _sessions[req.params.key];
     if (s) {
         var u = s.findUser(req.params.name);
-        if (u){
+        if (u) {
             u._pinged = true;
             res.send(JSON.stringify(s.getSessionInfo()));
             return;
@@ -244,7 +243,7 @@ Session.sessionInfo = function (req, res) {
  * @param res Sends true of false based on if the session exists or not
  */
 Session.sessionExists = function (req, res) {
-    if(_sessions[req.params.key])
+    if (_sessions[req.params.key])
         res.send('true');
     else
         res.send('false');
@@ -271,19 +270,19 @@ Session.prototype.getSessionInfo = function () {
  * Used to stop sessions that have been idling for more than IDLE_TIME
  */
 Session.prototype.idleCounter = function () {
-    var time = 0, that = this;
+    var that = this;
     setInterval(function () {
-        time++;
-        if (time == IDLE_TIME) {
-            if (!that._pinged) {
-                that._stoppedSession = true;
-            } else {
-                that.idleCounter();
-                that._pinged = false;
-            }
-            clearInterval(this);
+        var allUsersTimedOut = true;
+        for (var i = 0; i < that._users.length; i++) {
+            if(!that._users[i]._timedOut)
+                allUsersTimedOut = false;
         }
-    }, 1000);
+        if(allUsersTimedOut && that._users.length !== 0){
+            _keys.push(that._sessionKey);
+           delete _sessions[that._sessionKey];
+           clearInterval(this);
+        }
+    }, 3000);
 };
 
 module.exports = Session;
