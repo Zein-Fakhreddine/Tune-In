@@ -279,6 +279,7 @@ Session.prototype.idleCounter = function () {
         }
         if(allUsersTimedOut && that._users.length !== 0){
             _keys.push(that._sessionKey);
+            _ipKeys[that._sessionIp].splice(_ipKeys[that._sessionIp].indexOf(that._sessionKey), 1);
            delete _sessions[that._sessionKey];
            clearInterval(this);
         }
